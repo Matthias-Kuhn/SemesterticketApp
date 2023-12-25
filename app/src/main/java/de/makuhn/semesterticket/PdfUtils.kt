@@ -27,7 +27,7 @@ object PdfUtils {
         val parcelFileDescriptor = getParcelFileDescriptor(context, uri)!!
 
 
-        val pdfRenderer: PdfRenderer = PdfRenderer(parcelFileDescriptor)
+        val pdfRenderer = PdfRenderer(parcelFileDescriptor)
         val firstPage = pdfRenderer.openPage(0)
 
         // Calculate the aspect ratio to maintain the original aspect ratio when resizing
@@ -35,10 +35,11 @@ object PdfUtils {
         val targetHeight: Int = (targetWidth / aspectRatio).toInt()
 
         // Create a Bitmap object to hold the rendered page
-        val bitmap = Bitmap.createBitmap(firstPage.width, firstPage.height, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888)
 
         // Render the page content onto the Bitmap
         firstPage.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+
 
         // Resize the Bitmap to the target width while maintaining the aspect ratio
         val resizedBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
