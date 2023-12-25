@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
                 // Call the renderFirstPage method to get the resized Bitmap
                 val resizedBitmap = PdfUtils.renderFirstPage(this, pdfUri)
-                val resizedBitmap2 = PdfUtils.cropBitmap(resizedBitmap, 1408, 512, 2400, 876*2)
+                val resizedBitmap2 = PdfUtils.getLeftBitmap(resizedBitmap)
                 Log.d("makuhn", "loading of uri "+ pdfUri.toString())
                 imageView?.let {
                     if (resizedBitmap2 != null) {

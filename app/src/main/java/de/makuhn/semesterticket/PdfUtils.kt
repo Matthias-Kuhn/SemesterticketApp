@@ -4,66 +4,63 @@ import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.ParcelFileDescriptor
-import androidx.core.net.toUri
-import java.io.File
 import java.io.IOException
-import java.net.URI
-import java.net.URL
 
 object PdfUtils {
 
-
-    fun getParcelFileDescriptor(context: Context, uri: Uri): ParcelFileDescriptor? {
-        try {
-            return context.contentResolver.openFileDescriptor(uri, "r")
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return null
-    }
+    private const val PDF_RENDER_PIXEL_WIDTH = 4000
 
     fun renderFirstPage(context: Context, uri: Uri): Bitmap {
-        val targetWidth = 4000
+
         val parcelFileDescriptor = getParcelFileDescriptor(context, uri)!!
-
-
         val pdfRenderer = PdfRenderer(parcelFileDescriptor)
         val firstPage = pdfRenderer.openPage(0)
+        val targetHeight = calculatePdfPixelHeight(firstPage)
+        val bitmap = Bitmap.createBitmap(PDF_RENDER_PIXEL_WIDTH, targetHeight, Bitmap.Config.ARGB_8888)
 
-        // Calculate the aspect ratio to maintain the original aspect ratio when resizing
-        val aspectRatio: Float = firstPage.width.toFloat() / firstPage.height.toFloat()
-        val targetHeight: Int = (targetWidth / aspectRatio).toInt()
-
-        // Create a Bitmap object to hold the rendered page
-        val bitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888)
-
-        // Render the page content onto the Bitmap
         firstPage.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-
-
-        // Resize the Bitmap to the target width while maintaining the aspect ratio
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
-
-        // Close the page and renderer
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, PDF_RENDER_PIXEL_WIDTH, targetHeight, true)
         firstPage.close()
         pdfRenderer.close()
 
         return resizedBitmap
     }
 
-    fun cropBitmap(bitmap: Bitmap, left: Int, top: Int, right: Int, bottom: Int): Bitmap? {
-        // Ensure that the provided coordinates are within the bounds of the original bitmap
-        if (left < 0 || top < 0 || right > bitmap.width || bottom > bitmap.height) {
-            return null
-        }
+    private fun calculatePdfPixelHeight(firstPage: PdfRenderer.Page): Int {
+        val aspectRatio: Float = firstPage.width.toFloat() / firstPage.height.toFloat()
+        return (PDF_RENDER_PIXEL_WIDTH / aspectRatio).toInt()
+    }
 
-        // Create a new Bitmap with the specified crop area
+    private fun getParcelFileDescriptor(context: Context, uri: Uri): ParcelFileDescriptor? {
         return try {
-            Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top)
-        } catch (e: IllegalArgumentException) {
-            // IllegalArgumentException can be thrown if the provided coordinates are invalid
+            context.contentResolver.openFileDescriptor(uri, "r")
+        } catch (e: IOException) {
             e.printStackTrace()
             null
         }
+    }
+
+    fun cropBitmap(bitmap: Bitmap, left: Int, top: Int, width: Int, height: Int): Bitmap? {
+        // 100 equals 1cm
+        return try {
+            Bitmap.createBitmap(bitmap,
+                convertToPixels(left),
+                convertToPixels(top),
+                convertToPixels(width),
+                convertToPixels(height))
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun convertToPixels(value: Int): Int = ((PDF_RENDER_PIXEL_WIDTH / 2100.0) * value).toInt()
+
+
+    fun getLeftBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 208, 269, 523, 653)
+    }
+    fun getCenterBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 739, 269, 523, 653)
     }
 }
