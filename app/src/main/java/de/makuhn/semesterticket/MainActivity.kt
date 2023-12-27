@@ -58,6 +58,11 @@ class MainActivity : AppCompatActivity() {
                     // Handle the case where imageView is null
                     Toast.makeText(this, "ImageView is not initialized", Toast.LENGTH_SHORT).show()
                 }
+                val fromBitmap = PdfUtils.getFromDateBitmap(resizedBitmap)
+                val openButton: Button = findViewById(R.id.openButton)
+                OcrUtils.read(fromBitmap!!) {
+                    openButton.text = it
+                }
             }
         }
     }

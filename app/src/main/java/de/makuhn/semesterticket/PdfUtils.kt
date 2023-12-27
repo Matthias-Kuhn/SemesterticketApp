@@ -63,4 +63,7 @@ object PdfUtils {
     fun getCenterBitmap(bitmap: Bitmap): Bitmap? {
         return cropBitmap(bitmap, 739, 269, 523, 653)
     }
+    fun getFromDateBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 231, 340, 160, 32)
+    }
 }
