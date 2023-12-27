@@ -63,6 +63,31 @@ object PdfUtils {
     fun getCenterBitmap(bitmap: Bitmap): Bitmap? {
         return cropBitmap(bitmap, 739, 269, 523, 653)
     }
+
+    fun getRightBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 1267, 269, 523, 653)
+    }
+
+    fun getCodeBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 800, 350, 400, 400)
+    }
+
+    fun getHeadingBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 674, 119, 635, 76)
+    }
+
+    fun getSubheadingBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 674, 196, 635, 67)
+    }
+
+    fun getNameBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 226, 649, 489, 92)
+    }
+
+    fun getTicketNumberBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 743, 750, 515, 166)
+    }
+
     fun getFromDateBitmap(bitmap: Bitmap): Bitmap? {
         return cropBitmap(bitmap, 231, 340, 160, 32)
     }
