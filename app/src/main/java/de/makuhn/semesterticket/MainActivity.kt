@@ -8,8 +8,15 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import de.makuhn.semesterticket.TicketCreator.createTicket
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main)  {
 
     private lateinit var imageView: ImageView
 
@@ -58,14 +65,28 @@ class MainActivity : AppCompatActivity() {
                     // Handle the case where imageView is null
                     Toast.makeText(this, "ImageView is not initialized", Toast.LENGTH_SHORT).show()
                 }
-                val fromBitmap = OcrUtils.removeGrayText(PdfUtils.getNameBitmap(resizedBitmap)!!)
+                val fromBitmap = OcrUtils.removeGrayText(PdfUtils.getNameBitmapDT(resizedBitmap)!!)
                 val openButton: Button = findViewById(R.id.openButton)
                 OcrUtils.read(fromBitmap!!) {
                     openButton.text = it
                 }
 
-                val ticket = Ticket(resizedBitmap)
-                ticket.startDate
+
+                launch {
+                    try {
+                        val ticket = withContext(Dispatchers.Default) {
+                            createTicket(resizedBitmap)
+                        }
+
+                        // Process the ticket or perform other actions with the result
+                        Log.d("makuhn", ticket.heading)
+                    } catch (e: Exception) {
+                        // Handle exceptions if any
+                        e.printStackTrace()
+                    }
+                }
+
+
             }
         }
     }

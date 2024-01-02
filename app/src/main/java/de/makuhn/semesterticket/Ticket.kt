@@ -6,55 +6,30 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-class Ticket(fullSizeBitmap: Bitmap) {
+class Ticket(
+    startDateString: String,
+    endDateString: String,
+    var name: String,
+    var heading: String,
+    var subheading: String,
+    var page1: Bitmap,
+    var page2: Bitmap,
+    var page3: Bitmap,
+    var aztec_code: Bitmap,
+    var ticketNumber: Bitmap,
+    var fullSizeBitmap: Bitmap
+) {
 
     var type: Type? = null
-    var startDate: LocalDateTime? = null
-    var endDate: LocalDateTime? = null
-
-    var name = ""
-    var heading = ""
-    var subheading = ""
-
-    var page1: Bitmap
-    var page2: Bitmap
-    var page3: Bitmap
-    var aztec_code: Bitmap
-    var ticketNumber: Bitmap
-
-    // Todo: Save pdf file
-
+    lateinit var startDate: LocalDateTime
+    lateinit var endDate: LocalDateTime
 
     init {
-        page1 = OcrUtils.removeGrayText(PdfUtils.getLeftBitmap(fullSizeBitmap)!!)
-        page2 = PdfUtils.getCenterBitmap(fullSizeBitmap)!!
-        page3 = PdfUtils.getRightBitmap(fullSizeBitmap)!!
-        aztec_code = PdfUtils.getCodeBitmap(fullSizeBitmap)!!
-        ticketNumber = PdfUtils.getTicketNumberBitmap(fullSizeBitmap)!!
-
-        val bitmapStartDate = OcrUtils.removeGrayText(PdfUtils.getFromDateBitmap(fullSizeBitmap)!!)
-        val bitmapName = OcrUtils.removeGrayText(PdfUtils.getNameBitmap(fullSizeBitmap)!!)
-        val bitmapHeading = PdfUtils.getHeadingBitmap(fullSizeBitmap)!!
-        val bitmapSubheading = PdfUtils.getSubheadingBitmap(fullSizeBitmap)!!
-
-        OcrUtils.read(bitmapStartDate) {
-            setStartDate(it)
-        }
-
-        OcrUtils.read(bitmapName) {
-            name = it.replace("\\n|\\r".toRegex(), " ")
-        }
-
-        OcrUtils.read(bitmapHeading) {
-            heading = it
-            setType(it)
-        }
-        OcrUtils.read(bitmapSubheading) {
-            subheading = it
-        }
-
-
+        setType(heading)
+        setStartDate(startDateString)
+        setEndDate(endDateString)
     }
+
 
     fun setType(typeString: String) {
         type = if (typeString.contains("Deutschland")) {

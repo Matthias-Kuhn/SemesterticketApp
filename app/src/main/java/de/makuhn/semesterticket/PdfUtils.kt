@@ -80,8 +80,11 @@ object PdfUtils {
         return cropBitmap(bitmap, 674, 196, 635, 67)
     }
 
-    fun getNameBitmap(bitmap: Bitmap): Bitmap? {
+    fun getNameBitmapST(bitmap: Bitmap): Bitmap? {
         return cropBitmap(bitmap, 226, 649, 489, 92)
+    }
+    fun getNameBitmapDT(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 226, 677, 489, 92)
     }
 
     fun getTicketNumberBitmap(bitmap: Bitmap): Bitmap? {
@@ -89,6 +92,10 @@ object PdfUtils {
     }
 
     fun getFromDateBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 231, 340, 160, 32)
+        return cropBitmap(bitmap, 226, 328, 175, 44)
+    }
+
+    fun getToDateBitmap(bitmap: Bitmap): Bitmap? {
+        return cropBitmap(bitmap, 419, 328, 280, 44)
     }
 }
