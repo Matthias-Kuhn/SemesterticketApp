@@ -1,21 +1,20 @@
 package de.makuhn.semesterticket
 
+import android.content.Context
 import android.graphics.Bitmap
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 object TicketCreator{
 
-    suspend fun createTicket(fullSizeBitmap: Bitmap): Ticket {
+
+    suspend fun createTicket(fullSizeBitmap: Bitmap, context: Context): Ticket {
         return coroutineScope {
             // initialize bitmaps
             val page1 = OcrUtils.removeGrayText(PdfUtils.getLeftBitmap(fullSizeBitmap)!!)
             val page2 = PdfUtils.getCenterBitmap(fullSizeBitmap)!!
             val page3 = PdfUtils.getRightBitmap(fullSizeBitmap)!!
-            val aztec_code = PdfUtils.getCodeBitmap(fullSizeBitmap)!!
+            val aztecCode = PdfUtils.getCodeBitmap(fullSizeBitmap)!!
             val ticketNumber = PdfUtils.getTicketNumberBitmap(fullSizeBitmap)!!
 
 
@@ -24,8 +23,9 @@ object TicketCreator{
             val heading = async { getHeading(fullSizeBitmap) }.await()
             val subheading = async { getSubheading(fullSizeBitmap) }.await()
             val name = async { getName(fullSizeBitmap,heading) }.await()
+            BitmapStorageHelper.saveBitmapToInternalStorage(context, "code1", aztecCode)
 
-            Ticket(startDate, endDate, name, heading, subheading, page1, page2, page3, aztec_code, ticketNumber, fullSizeBitmap)
+            Ticket(startDate, endDate, name, heading, subheading, page1, page2, page3, aztecCode, ticketNumber, fullSizeBitmap)
         }
     }
 

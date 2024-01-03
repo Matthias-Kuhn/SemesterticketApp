@@ -1,20 +1,23 @@
 package de.makuhn.semesterticket
 
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import de.makuhn.semesterticket.TicketCreator.createTicket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main)  {
 
@@ -30,6 +33,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         openButton.setOnClickListener {
             openPdfPicker()
         }
+
+        Log.d("makuhn_files", this.fileList().size.toString())
+
+
     }
 
     private fun openPdfPicker() {
@@ -71,12 +78,17 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
                     openButton.text = it
                 }
 
+                BitmapStorageHelper.saveBitmapToInternalStorage(this, "test", fromBitmap)
+
 
                 launch {
                     try {
                         val ticket = withContext(Dispatchers.Default) {
-                            createTicket(resizedBitmap)
+                            createTicket(resizedBitmap, this@MainActivity)
                         }
+                        //saveBitmaps(ticket)
+
+
 
                         // Process the ticket or perform other actions with the result
                         Log.d("makuhn", ticket.heading)
@@ -90,6 +102,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
             }
         }
     }
+
+     fun saveBitmaps(ticket: Ticket) {
+        BitmapStorageHelper.saveBitmapToInternalStorage(this, "code", ticket.aztec_code)
+        BitmapStorageHelper.saveBitmapToInternalStorage(this, "nr", ticket.ticketNumber)
+        BitmapStorageHelper.saveBitmapToInternalStorage(this, "fsb", ticket.fullSizeBitmap)
+
+    }
+
 
     companion object {
         private const val PICK_PDF_REQUEST = 1
