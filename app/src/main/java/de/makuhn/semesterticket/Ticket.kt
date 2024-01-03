@@ -12,9 +12,6 @@ class Ticket(
     var name: String,
     var heading: String,
     var subheading: String,
-    var page1: Bitmap,
-    var page2: Bitmap,
-    var page3: Bitmap,
     var aztec_code: Bitmap,
     var ticketNumber: Bitmap,
     var fullSizeBitmap: Bitmap

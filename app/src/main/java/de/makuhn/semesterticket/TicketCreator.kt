@@ -12,9 +12,9 @@ object TicketCreator{
     suspend fun createTicket(fullSizeBitmap: Bitmap): Ticket {
         return coroutineScope {
             // initialize bitmaps
-            val page1 = OcrUtils.removeGrayText(PdfUtils.getLeftBitmap(fullSizeBitmap)!!)
-            val page2 = PdfUtils.getCenterBitmap(fullSizeBitmap)!!
-            val page3 = PdfUtils.getRightBitmap(fullSizeBitmap)!!
+            // val page1 = OcrUtils.removeGrayText(PdfUtils.getLeftBitmap(fullSizeBitmap)!!)
+            // val page2 = PdfUtils.getCenterBitmap(fullSizeBitmap)!!
+            // val page3 = PdfUtils.getRightBitmap(fullSizeBitmap)!!
             val aztec_code = PdfUtils.getCodeBitmap(fullSizeBitmap)!!
             val ticketNumber = PdfUtils.getTicketNumberBitmap(fullSizeBitmap)!!
 
@@ -25,7 +25,7 @@ object TicketCreator{
             val subheading = async { getSubheading(fullSizeBitmap) }.await()
             val name = async { getName(fullSizeBitmap,heading) }.await()
 
-            Ticket(startDate, endDate, name, heading, subheading, page1, page2, page3, aztec_code, ticketNumber, fullSizeBitmap)
+            Ticket(startDate, endDate, name, heading, subheading, aztec_code, ticketNumber, fullSizeBitmap)
         }
     }
 
