@@ -1,9 +1,6 @@
 package de.makuhn.semesterticket
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -11,15 +8,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.normal.TedPermission
 import de.makuhn.semesterticket.TicketCreator.createTicket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.IOException
 
 class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main)  {
 
@@ -63,27 +57,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
 
                 // Call the renderFirstPage method to get the resized Bitmap
                 val resizedBitmap = PdfUtils.renderFirstPage(this, pdfUri)
-                val resizedBitmap2 = PdfUtils.getLeftBitmap(resizedBitmap)
+                val resizedBitmap2 = TicketCropUtils.cropToLeftTicketPage(resizedBitmap)
                 Log.d("makuhn", "loading of uri "+ pdfUri.toString())
                 imageView?.let {
-                    if (resizedBitmap2 != null) {
-                        // Display the resized Bitmap in the ImageView
-                        it.setImageBitmap(resizedBitmap2)
-                    } else {
-                        // Handle the case where rendering failed or the Bitmap is null
-                        Toast.makeText(this, "Failed to render PDF or invalid Bitmap", Toast.LENGTH_SHORT).show()
-                    }
-                } ?: run {
-                    // Handle the case where imageView is null
-                    Toast.makeText(this, "ImageView is not initialized", Toast.LENGTH_SHORT).show()
+                    it.setImageBitmap(resizedBitmap2)
                 }
-                val fromBitmap = OcrUtils.removeGrayText(PdfUtils.getNameBitmapDT(resizedBitmap)!!)
-                val openButton: Button = findViewById(R.id.openButton)
-                OcrUtils.read(fromBitmap!!) {
-                    openButton.text = it
-                }
-
-                BitmapStorageHelper.saveBitmapToInternalStorage(this, "test", fromBitmap)
 
 
                 launch {
@@ -92,11 +70,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
                             createTicket(resizedBitmap, this@MainActivity)
                         }
                         //saveBitmaps(ticket)
+                        val openButton: Button = findViewById(R.id.openButton)
+                        openButton.text = ticket.ticketTitle
 
-
-
-                        // Process the ticket or perform other actions with the result
-                        Log.d("makuhn", ticket.heading)
                     } catch (e: Exception) {
                         // Handle exceptions if any
                         e.printStackTrace()
@@ -109,9 +85,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
     }
 
      fun saveBitmaps(ticket: Ticket) {
-        BitmapStorageHelper.saveBitmapToInternalStorage(this, "code", ticket.aztec_code)
-        BitmapStorageHelper.saveBitmapToInternalStorage(this, "nr", ticket.ticketNumber)
-        BitmapStorageHelper.saveBitmapToInternalStorage(this, "fsb", ticket.fullSizeBitmap)
+//        BitmapStorageHelper.saveBitmapToInternalStorage(this, "code", ticket.aztecCode)
+//        BitmapStorageHelper.saveBitmapToInternalStorage(this, "nr", ticket.ticketNumberImagePath)
+//        BitmapStorageHelper.saveBitmapToInternalStorage(this, "fsb", ticket.fullSizeTicketImagePath)
 
     }
 

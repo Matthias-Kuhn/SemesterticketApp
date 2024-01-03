@@ -40,62 +40,18 @@ object PdfUtils {
         }
     }
 
-    fun cropBitmap(bitmap: Bitmap, left: Int, top: Int, width: Int, height: Int): Bitmap? {
+    fun cropBitmap(bitmap: Bitmap, left: Int, top: Int, width: Int, height: Int): Bitmap {
         // 100 equals 1cm
-        return try {
-            Bitmap.createBitmap(bitmap,
-                convertToPixels(left),
-                convertToPixels(top),
-                convertToPixels(width),
-                convertToPixels(height))
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-            null
-        }
+
+        return Bitmap.createBitmap(bitmap,
+            convertToPixels(left),
+            convertToPixels(top),
+            convertToPixels(width),
+            convertToPixels(height))
     }
 
     private fun convertToPixels(value: Int): Int = ((PDF_RENDER_PIXEL_WIDTH / 2100.0) * value).toInt()
 
 
-    fun getLeftBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 208, 269, 523, 653)
-    }
-    fun getCenterBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 739, 269, 523, 653)
-    }
 
-    fun getRightBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 1267, 269, 523, 653)
-    }
-
-    fun getCodeBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 800, 350, 400, 400)
-    }
-
-    fun getHeadingBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 674, 119, 635, 76)
-    }
-
-    fun getSubheadingBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 674, 196, 635, 67)
-    }
-
-    fun getNameBitmapST(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 226, 649, 489, 92)
-    }
-    fun getNameBitmapDT(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 226, 677, 489, 92)
-    }
-
-    fun getTicketNumberBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 743, 750, 515, 166)
-    }
-
-    fun getFromDateBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 226, 328, 175, 44)
-    }
-
-    fun getToDateBitmap(bitmap: Bitmap): Bitmap? {
-        return cropBitmap(bitmap, 419, 328, 280, 44)
-    }
 }

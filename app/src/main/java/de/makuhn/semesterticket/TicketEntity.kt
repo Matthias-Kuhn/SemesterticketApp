@@ -12,4 +12,6 @@ data class TicketEntity (
     val aztec_code: ByteArray,
     val ticketNumber: ByteArray,
     val fullSizeBitmap: ByteArray
-)
+) {
+
+}
