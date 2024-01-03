@@ -11,21 +11,20 @@ object TicketCreator{
     suspend fun createTicket(fullSizeBitmap: Bitmap, context: Context): Ticket {
         return coroutineScope {
             // initialize bitmaps
-            val page1 = OcrUtils.removeGrayText(PdfUtils.getLeftBitmap(fullSizeBitmap)!!)
-            val page2 = PdfUtils.getCenterBitmap(fullSizeBitmap)!!
-            val page3 = PdfUtils.getRightBitmap(fullSizeBitmap)!!
             val aztecCode = PdfUtils.getCodeBitmap(fullSizeBitmap)!!
             val ticketNumber = PdfUtils.getTicketNumberBitmap(fullSizeBitmap)!!
 
-
+            // perform ocr
             val startDate = async { getStartDate(fullSizeBitmap) }.await()
             val endDate = async { getEndDate(fullSizeBitmap) }.await()
             val heading = async { getHeading(fullSizeBitmap) }.await()
             val subheading = async { getSubheading(fullSizeBitmap) }.await()
             val name = async { getName(fullSizeBitmap,heading) }.await()
+
+            // store bitmaps
             BitmapStorageHelper.saveBitmapToInternalStorage(context, "code1", aztecCode)
 
-            Ticket(startDate, endDate, name, heading, subheading, page1, page2, page3, aztecCode, ticketNumber, fullSizeBitmap)
+            Ticket(startDate, endDate, name, heading, subheading, aztecCode, ticketNumber, fullSizeBitmap)
         }
     }
 
