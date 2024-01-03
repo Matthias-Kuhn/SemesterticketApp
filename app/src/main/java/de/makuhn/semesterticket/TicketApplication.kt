@@ -1,6 +1,8 @@
 package de.makuhn.semesterticket
 
 import android.app.Application
+import de.makuhn.semesterticket.data.database.TicketRoomDatabase
+import de.makuhn.semesterticket.repository.TicketRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 

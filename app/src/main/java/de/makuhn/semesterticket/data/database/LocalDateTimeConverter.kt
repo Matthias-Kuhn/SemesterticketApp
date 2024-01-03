@@ -1,4 +1,4 @@
-package de.makuhn.semesterticket
+package de.makuhn.semesterticket.data.database
 
 import androidx.room.TypeConverter
 import java.time.LocalDateTime

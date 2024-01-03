@@ -1,7 +1,10 @@
-package de.makuhn.semesterticket
+package de.makuhn.semesterticket.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import de.makuhn.semesterticket.model.Ticket
+import de.makuhn.semesterticket.model.UnrecognizedTicketException
+import de.makuhn.semesterticket.data.BitmapStorageHelper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.time.LocalDate
@@ -55,8 +58,9 @@ object TicketCreator{
     }
 
     private suspend fun extractValidityStartDate(fullSizeBitmap: Bitmap): LocalDateTime {
-        val croppedBitmap = OcrUtils.removeGrayText(TicketCropUtils.cropToValidityStartDate(fullSizeBitmap))
-        val stringResult =  OcrUtils.readWithCoroutine(croppedBitmap)
+        val croppedBitmap =
+            OcrUtils.removeGrayText(TicketCropUtils.cropToValidityStartDate(fullSizeBitmap))
+        val stringResult = OcrUtils.readWithCoroutine(croppedBitmap)
 
         val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         val localDate = LocalDate.parse(stringResult, dateFormatter)
@@ -64,8 +68,9 @@ object TicketCreator{
     }
 
     private suspend fun extractValidityEndDate(fullSizeBitmap: Bitmap): LocalDateTime {
-        val croppedBitmap = OcrUtils.removeGrayText(TicketCropUtils.cropToValidityEndDate(fullSizeBitmap))
-        val stringResult =  OcrUtils.readWithCoroutine(croppedBitmap)
+        val croppedBitmap =
+            OcrUtils.removeGrayText(TicketCropUtils.cropToValidityEndDate(fullSizeBitmap))
+        val stringResult = OcrUtils.readWithCoroutine(croppedBitmap)
 
         return if (stringResult.length < 12) {
             val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
@@ -79,11 +84,21 @@ object TicketCreator{
 
     private suspend fun extractPassengerName(fullSizeBitmap: Bitmap, type: Ticket.Type): String {
         val croppedBitmap = if (type == Ticket.Type.DEUTSCHLANDTICKET) {
-            OcrUtils.removeGrayText(TicketCropUtils.cropToPassengerName_DEUTSCHLANDTICKET(fullSizeBitmap))}
+            OcrUtils.removeGrayText(
+                TicketCropUtils.cropToPassengerName_DEUTSCHLANDTICKET(
+                    fullSizeBitmap
+                )
+            )
+        }
         else {
-            OcrUtils.removeGrayText(TicketCropUtils.cropToPassengerName_SEMESTERTICKET(fullSizeBitmap))}
+            OcrUtils.removeGrayText(
+                TicketCropUtils.cropToPassengerName_SEMESTERTICKET(
+                    fullSizeBitmap
+                )
+            )
+        }
 
-        val name =  OcrUtils.readWithCoroutine(croppedBitmap)
+        val name = OcrUtils.readWithCoroutine(croppedBitmap)
         return name.replace("\\n|\\r".toRegex(), " ")
     }
 

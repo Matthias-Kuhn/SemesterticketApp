@@ -1,12 +1,10 @@
-package de.makuhn.semesterticket
+package de.makuhn.semesterticket.model
 
 import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDate
+import de.makuhn.semesterticket.data.BitmapStorageHelper
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 @Entity(tableName = "tickets")
 data class Ticket(

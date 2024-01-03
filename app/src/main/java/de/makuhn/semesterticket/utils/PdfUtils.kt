@@ -1,4 +1,4 @@
-package de.makuhn.semesterticket
+package de.makuhn.semesterticket.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
@@ -47,7 +47,8 @@ object PdfUtils {
             convertToPixels(left),
             convertToPixels(top),
             convertToPixels(width),
-            convertToPixels(height))
+            convertToPixels(height)
+        )
     }
 
     private fun convertToPixels(value: Int): Int = ((PDF_RENDER_PIXEL_WIDTH / 2100.0) * value).toInt()

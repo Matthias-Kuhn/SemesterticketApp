@@ -1,4 +1,4 @@
-package de.makuhn.semesterticket
+package de.makuhn.semesterticket.utils
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

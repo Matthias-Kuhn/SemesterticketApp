@@ -1,6 +1,8 @@
-package de.makuhn.semesterticket
+package de.makuhn.semesterticket.repository
 
 import androidx.annotation.WorkerThread
+import de.makuhn.semesterticket.data.local.TicketDao
+import de.makuhn.semesterticket.model.Ticket
 import kotlinx.coroutines.flow.Flow
 
 class TicketRepository(private val ticketDao: TicketDao) {

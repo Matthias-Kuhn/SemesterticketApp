@@ -1,4 +1,4 @@
-package de.makuhn.semesterticket
+package de.makuhn.semesterticket.ui.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,11 +6,17 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import com.bumptech.glide.Glide
-import de.makuhn.semesterticket.TicketCreator.createTicket
+import de.makuhn.semesterticket.R
+import de.makuhn.semesterticket.TicketApplication
+import de.makuhn.semesterticket.model.Ticket
+import de.makuhn.semesterticket.ui.viewmodel.TicketViewModel
+import de.makuhn.semesterticket.ui.viewmodel.TicketViewModelFactory
+import de.makuhn.semesterticket.utils.PdfUtils
+import de.makuhn.semesterticket.utils.TicketCreator.createTicket
+import de.makuhn.semesterticket.utils.TicketCropUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
