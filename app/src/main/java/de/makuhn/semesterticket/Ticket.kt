@@ -17,7 +17,7 @@ class Ticket(
     var fullSizeBitmap: Bitmap
 ) {
 
-    var type: Type? = null
+    lateinit var type: Type
     lateinit var startDate: LocalDateTime
     lateinit var endDate: LocalDateTime
 
