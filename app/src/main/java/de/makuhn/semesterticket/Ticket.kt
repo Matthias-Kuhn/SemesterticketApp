@@ -1,12 +1,16 @@
 package de.makuhn.semesterticket
 
 import android.content.Context
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-class Ticket(
+@Entity(tableName = "tickets")
+data class Ticket(
+    @PrimaryKey(autoGenerate = true) val ticketId: Long = 0,
     val ticketType: Type,
     val ticketTitle: String,
     val ticketSubtitle: String,
@@ -17,6 +21,11 @@ class Ticket(
     val ticketNumberImagePath: String,
     val fullSizeTicketImagePath: String
 ) {
+
+    fun isValid(): Boolean {
+        val currentDate = LocalDateTime.now()
+        return currentDate.isAfter(validityStartDate) && currentDate.isBefore(validityEndDate)
+    }
 
     fun onDelete(context: Context) {
         BitmapStorageHelper.deleteFileFromInternalStorage(context, aztecCodeImagePath)

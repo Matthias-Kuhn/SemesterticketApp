@@ -17,25 +17,19 @@ object TicketCreator{
             val ticketTitle = async { extractTicketTitle(fullSizeBitmap) }.await()
             val ticketType = getTicketTypeFromTitle(ticketTitle)
 
-            // crop bitmaps
-
-            val ticketNumberBitmap = TicketCropUtils.cropToTicketNumber(fullSizeBitmap)
-
             // perform ocr
             val ticketSubtitle = async { extractTicketSubtitle(fullSizeBitmap) }.await()
             val validityStartDate = async { extractValidityStartDate(fullSizeBitmap) }.await()
             val validityEndDate = async { extractValidityEndDate(fullSizeBitmap) }.await()
             val passengerName = async { extractPassengerName(fullSizeBitmap, ticketType) }.await()
 
+            // crop bitmaps and store them in the file system
             val currentTimestamp = System.currentTimeMillis().toString()
-
-            // Todo store Bitmaps and get paths
-            // BitmapStorageHelper.saveBitmapToInternalStorage(context, "code1", aztecCodeBitmap)
             val aztecCodeImagePath = cropAndStoreAztecCode(context, fullSizeBitmap, currentTimestamp)
             val ticketNumberImagePath = cropAndStoreTicketNumber(context, fullSizeBitmap, currentTimestamp)
             val fullSizeTicketImagePath = storeFullSizeTicket(context, fullSizeBitmap, currentTimestamp)
 
-            Ticket(ticketType, ticketTitle, ticketSubtitle, validityStartDate, validityEndDate, passengerName, aztecCodeImagePath, ticketNumberImagePath, fullSizeTicketImagePath)
+            Ticket(0, ticketType, ticketTitle, ticketSubtitle, validityStartDate, validityEndDate, passengerName, aztecCodeImagePath, ticketNumberImagePath, fullSizeTicketImagePath)
         }
     }
 

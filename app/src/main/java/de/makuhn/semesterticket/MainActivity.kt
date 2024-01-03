@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
 import com.bumptech.glide.Glide
 import de.makuhn.semesterticket.TicketCreator.createTicket
 import kotlinx.coroutines.CoroutineScope
@@ -18,11 +20,25 @@ import java.io.File
 class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main)  {
 
     private lateinit var imageView: ImageView
+    private lateinit var textView: TextView
+    private val ticketViewModel: TicketViewModel by viewModels {
+        TicketViewModelFactory((application as TicketApplication).repository)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        textView = findViewById(R.id.textView)
+        ticketViewModel.allTickets.observe(this) {tickets ->
+            tickets.let {
+                var merge =""
+                for (ticket in it) {
+                    merge += "${ticket.ticketId}, ${ticket.ticketTitle}"
+                }
+                textView.text = merge
+            }
+        }
 
         val openButton: Button = findViewById(R.id.openButton)
         imageView = findViewById(R.id.imageView)
@@ -75,8 +91,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
                         val toLoad = File(filesDir, ticket.fullSizeTicketImagePath)
                         Glide.with(this@MainActivity).load(toLoad).into(imageView)
 
-                        ticket.onDelete(this@MainActivity)
-                        Glide.with(this@MainActivity).load(toLoad).into(imageView)
+                        ticketViewModel.insert(ticket)
 
                     } catch (e: Exception) {
                         // Handle exceptions if any
