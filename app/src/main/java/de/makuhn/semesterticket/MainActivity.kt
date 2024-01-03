@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import de.makuhn.semesterticket.TicketCreator.createTicket
@@ -17,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.IOException
 
 class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main)  {
@@ -33,6 +35,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         openButton.setOnClickListener {
             openPdfPicker()
         }
+
+        val toLoad = File(filesDir, "code1.jpg")
+        Glide.with(this).load(toLoad).into(imageView)
 
         Log.d("makuhn_files", this.fileList().size.toString())
 
