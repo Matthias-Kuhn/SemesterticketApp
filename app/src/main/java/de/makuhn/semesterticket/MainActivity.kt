@@ -71,7 +71,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
                         }
                         //saveBitmaps(ticket)
                         val openButton: Button = findViewById(R.id.openButton)
-                        openButton.text = ticket.ticketTitle
+                        openButton.text = "${ticket.ticketTitle} von ${ticket.passengerName}"
+                        val toLoad = File(filesDir, ticket.fullSizeTicketImagePath)
+                        Glide.with(this@MainActivity).load(toLoad).into(imageView)
+
+                        ticket.onDelete(this@MainActivity)
+                        Glide.with(this@MainActivity).load(toLoad).into(imageView)
 
                     } catch (e: Exception) {
                         // Handle exceptions if any

@@ -15,7 +15,7 @@ object BitmapStorageHelper {
 
      fun saveBitmapToInternalStorage(context: Context, filename: String, bitmap: Bitmap) {
         try {
-            context.openFileOutput("$filename.jpg", AppCompatActivity.MODE_PRIVATE).use { stream ->
+            context.openFileOutput(filename, AppCompatActivity.MODE_PRIVATE).use { stream ->
                 if(!bitmap.compress(Bitmap.CompressFormat.JPEG, 75, stream)){
                     throw IOException("Unable to save bitmap")
                 }

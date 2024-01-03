@@ -8,7 +8,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import kotlin.jvm.Throws
 
 object TicketCreator{
 
@@ -19,7 +18,7 @@ object TicketCreator{
             val ticketType = getTicketTypeFromTitle(ticketTitle)
 
             // crop bitmaps
-            val aztecCodeBitmap = TicketCropUtils.cropToAztecCode(fullSizeBitmap)
+
             val ticketNumberBitmap = TicketCropUtils.cropToTicketNumber(fullSizeBitmap)
 
             // perform ocr
@@ -28,10 +27,15 @@ object TicketCreator{
             val validityEndDate = async { extractValidityEndDate(fullSizeBitmap) }.await()
             val passengerName = async { extractPassengerName(fullSizeBitmap, ticketType) }.await()
 
+            val currentTimestamp = System.currentTimeMillis().toString()
+
             // Todo store Bitmaps and get paths
             // BitmapStorageHelper.saveBitmapToInternalStorage(context, "code1", aztecCodeBitmap)
+            val aztecCodeImagePath = cropAndStoreAztecCode(context, fullSizeBitmap, currentTimestamp)
+            val ticketNumberImagePath = cropAndStoreTicketNumber(context, fullSizeBitmap, currentTimestamp)
+            val fullSizeTicketImagePath = storeFullSizeTicket(context, fullSizeBitmap, currentTimestamp)
 
-            Ticket(ticketType, ticketTitle, ticketSubtitle, validityStartDate, validityEndDate, passengerName, "", "", "")
+            Ticket(ticketType, ticketTitle, ticketSubtitle, validityStartDate, validityEndDate, passengerName, aztecCodeImagePath, ticketNumberImagePath, fullSizeTicketImagePath)
         }
     }
 
@@ -87,5 +91,25 @@ object TicketCreator{
 
         val name =  OcrUtils.readWithCoroutine(croppedBitmap)
         return name.replace("\\n|\\r".toRegex(), " ")
+    }
+
+    fun cropAndStoreAztecCode(context: Context, fullSizeBitmap: Bitmap, currentTimestamp: String): String {
+        val filename = "${currentTimestamp}Code.jpg"
+        val aztecCodeBitmap = TicketCropUtils.cropToAztecCode(fullSizeBitmap)
+        BitmapStorageHelper.saveBitmapToInternalStorage(context, filename, aztecCodeBitmap)
+        return filename
+    }
+
+    fun cropAndStoreTicketNumber(context: Context, fullSizeBitmap: Bitmap, currentTimestamp: String): String {
+        val filename = "${currentTimestamp}Number.jpg"
+        val croppedBitmap = TicketCropUtils.cropToTicketNumber(fullSizeBitmap)
+        BitmapStorageHelper.saveBitmapToInternalStorage(context, filename, croppedBitmap)
+        return filename
+    }
+
+    fun storeFullSizeTicket(context: Context, fullSizeBitmap: Bitmap, currentTimestamp: String): String {
+        val filename = "${currentTimestamp}Ticket.jpg"
+        BitmapStorageHelper.saveBitmapToInternalStorage(context, filename, fullSizeBitmap)
+        return filename
     }
 }
