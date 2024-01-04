@@ -1,11 +1,14 @@
 package de.makuhn.semesterticket.ui.main
 
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.makuhn.semesterticket.R
 import de.makuhn.semesterticket.TicketApplication
+import de.makuhn.semesterticket.data.BitmapStorageHelper
 import de.makuhn.semesterticket.model.Ticket
 import de.makuhn.semesterticket.ui.recyclerview.TicketListAdapter
 import de.makuhn.semesterticket.ui.viewmodel.TicketViewModel
@@ -46,7 +50,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
 
 
         ticketViewModel.allTickets.observe(this) {tickets ->
-            tickets?.let { adapter.submitList(it) }
+            tickets?.let {
+                val sortedByEnd = it.sortedByDescending { it.validityEndDate }
+                adapter.submitList(sortedByEnd)
+            }
         }
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
@@ -145,6 +152,34 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
     }
 
     override fun onItemClick(position: Int) {
-        ticketViewModel.allTickets.value?.get(position)?.let { showDialog(it) }
+        ticketViewModel.allTickets.value?.sortedByDescending { it.validityEndDate }?.get(position)?.let { showDialog(it) }
     }
+
+    override fun onItemLongClick(position: Int) {
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Löschen")
+        builder.setMessage("Wirklich dieses Ticket Löschen?")
+
+
+        builder.setPositiveButton("Ja") { dialog, which ->
+            val ticket = ticketViewModel.allTickets.value?.sortedByDescending { it.validityEndDate }?.get(position)
+            ticket?.let { deleteTicket(it) }
+        }
+
+        builder.setNegativeButton("Nein") { dialog, which ->
+
+        }
+
+
+        builder.show()
+
+    }
+
+    fun deleteTicket(ticket: Ticket) {
+        ticket.onDelete(this)
+        ticket.let { ticketViewModel.delete(it) }
+    }
+
+
 }

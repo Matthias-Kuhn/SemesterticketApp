@@ -1,6 +1,7 @@
 package de.makuhn.semesterticket.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import de.makuhn.semesterticket.model.Ticket
@@ -14,4 +15,7 @@ interface TicketDao {
 
     @Query("SELECT * FROM tickets")
     fun getAllTickets(): Flow<List<Ticket>>
+
+    @Delete
+    suspend fun deleteTicket(ticket: Ticket)
 }

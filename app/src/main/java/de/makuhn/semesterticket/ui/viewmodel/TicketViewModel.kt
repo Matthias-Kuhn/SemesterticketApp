@@ -15,6 +15,10 @@ class TicketViewModel(private val repository: TicketRepository) : ViewModel() {
     fun insert(ticket: Ticket) = viewModelScope.launch {
         repository.insert(ticket)
     }
+
+    fun delete(ticket: Ticket) = viewModelScope.launch {
+        repository.delete(ticket)
+    }
 }
 
 class TicketViewModelFactory(private val repository: TicketRepository) : ViewModelProvider.Factory {

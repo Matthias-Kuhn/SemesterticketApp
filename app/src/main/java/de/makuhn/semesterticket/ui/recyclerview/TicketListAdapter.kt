@@ -22,7 +22,7 @@ class TicketListAdapter(private val listener: RecyclerViewEvent) : ListAdapter<T
         holder.bind(current)
     }
 
-    class TicketViewHolder(itemView: View, val listener: RecyclerViewEvent) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    class TicketViewHolder(itemView: View, val listener: RecyclerViewEvent) : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener{
         private val ticketTitleView: TextView = itemView.findViewById(R.id.tv_title)
         private val ticketNameView: TextView = itemView.findViewById(R.id.tv_passenger)
         private val ticketValidityView: TextView = itemView.findViewById(R.id.tv_validity)
@@ -41,6 +41,7 @@ class TicketListAdapter(private val listener: RecyclerViewEvent) : ListAdapter<T
             }
 
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         companion object {
@@ -57,6 +58,14 @@ class TicketListAdapter(private val listener: RecyclerViewEvent) : ListAdapter<T
                 listener.onItemClick(position)
             }
         }
+
+        override fun onLongClick(p0: View?): Boolean {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION){
+                listener.onItemLongClick(position)
+            }
+            return true
+        }
     }
 
     class TicketsComparator : DiffUtil.ItemCallback<Ticket>() {
@@ -72,5 +81,7 @@ class TicketListAdapter(private val listener: RecyclerViewEvent) : ListAdapter<T
 
     interface RecyclerViewEvent {
         fun onItemClick(position: Int)
+
+        fun onItemLongClick(position: Int)
     }
 }

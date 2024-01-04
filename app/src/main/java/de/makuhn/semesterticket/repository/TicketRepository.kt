@@ -15,4 +15,10 @@ class TicketRepository(private val ticketDao: TicketDao) {
         ticketDao.insertTicket(ticket)
     }
 
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun delete(ticket: Ticket) {
+        ticketDao.deleteTicket(ticket)
+    }
+
 }
