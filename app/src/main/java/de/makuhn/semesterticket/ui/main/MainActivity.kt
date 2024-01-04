@@ -1,32 +1,33 @@
 package de.makuhn.semesterticket.ui.main
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
+import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.makuhn.semesterticket.R
 import de.makuhn.semesterticket.TicketApplication
 import de.makuhn.semesterticket.model.Ticket
+import de.makuhn.semesterticket.ui.recyclerview.TicketListAdapter
 import de.makuhn.semesterticket.ui.viewmodel.TicketViewModel
 import de.makuhn.semesterticket.ui.viewmodel.TicketViewModelFactory
 import de.makuhn.semesterticket.utils.PdfUtils
 import de.makuhn.semesterticket.utils.TicketCreator.createTicket
-import de.makuhn.semesterticket.utils.TicketCropUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main)  {
+class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main), TicketListAdapter.RecyclerViewEvent {
 
-    private lateinit var imageView: ImageView
-    private lateinit var textView: TextView
     private val ticketViewModel: TicketViewModel by viewModels {
         TicketViewModelFactory((application as TicketApplication).repository)
     }
@@ -35,27 +36,23 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        textView = findViewById(R.id.textView)
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        val adapter = TicketListAdapter(this)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+
+
+
         ticketViewModel.allTickets.observe(this) {tickets ->
-            tickets.let {
-                var merge =""
-                for (ticket in it) {
-                    merge += "${ticket.ticketId}, ${ticket.ticketTitle}"
-                }
-                textView.text = merge
-            }
+            tickets?.let { adapter.submitList(it) }
         }
 
-        val openButton: Button = findViewById(R.id.openButton)
-        imageView = findViewById(R.id.imageView)
-        openButton.setOnClickListener {
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        fab.setOnClickListener {
             openPdfPicker()
         }
-
-        val toLoad = File(filesDir, "code1.jpg")
-        Glide.with(this).load(toLoad).into(imageView)
-
-        Log.d("makuhn_files", this.fileList().size.toString())
 
 
     }
@@ -79,11 +76,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
 
                 // Call the renderFirstPage method to get the resized Bitmap
                 val resizedBitmap = PdfUtils.renderFirstPage(this, pdfUri)
-                val resizedBitmap2 = TicketCropUtils.cropToLeftTicketPage(resizedBitmap)
-                Log.d("makuhn", "loading of uri "+ pdfUri.toString())
-                imageView?.let {
-                    it.setImageBitmap(resizedBitmap2)
-                }
+
 
 
                 launch {
@@ -91,11 +84,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
                         val ticket = withContext(Dispatchers.Default) {
                             createTicket(resizedBitmap, this@MainActivity)
                         }
-                        //saveBitmaps(ticket)
-                        val openButton: Button = findViewById(R.id.openButton)
-                        openButton.text = "${ticket.ticketTitle} von ${ticket.passengerName}"
-                        val toLoad = File(filesDir, ticket.fullSizeTicketImagePath)
-                        Glide.with(this@MainActivity).load(toLoad).into(imageView)
 
                         ticketViewModel.insert(ticket)
 
@@ -110,15 +98,53 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         }
     }
 
-     fun saveBitmaps(ticket: Ticket) {
-//        BitmapStorageHelper.saveBitmapToInternalStorage(this, "code", ticket.aztecCode)
-//        BitmapStorageHelper.saveBitmapToInternalStorage(this, "nr", ticket.ticketNumberImagePath)
-//        BitmapStorageHelper.saveBitmapToInternalStorage(this, "fsb", ticket.fullSizeTicketImagePath)
+    private fun showDialog(ticket: Ticket) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.ticket_dialog)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
+        val height = (resources.displayMetrics.heightPixels * 0.80).toInt()
+        dialog.window?.setLayout(width, height)
+
+
+        val title = dialog.findViewById<TextView>(R.id.tv_ticketTitle)
+        val subtitle = dialog.findViewById<TextView>(R.id.tv_subtitle)
+        val name = dialog.findViewById<TextView>(R.id.tv_passengername)
+        val validity = dialog.findViewById<TextView>(R.id.tv_validity)
+        val code = dialog.findViewById<ImageView>(R.id.iv_code)
+        val number = dialog.findViewById<ImageView>(R.id.iv_ticketNumber)
+        val logo = dialog.findViewById<ImageView>(R.id.iv_logo)
+
+        if (ticket.ticketType == Ticket.Type.DEUTSCHLANDTICKET) {
+            title.text = "D-Ticket"
+            logo.setImageResource(R.drawable.dticket)
+        } else {
+            title.text = ticket.ticketTitle
+            logo.setImageResource(R.drawable.nrwmobil)
+        }
+
+        subtitle.text = ticket.ticketSubtitle
+        name.text = ticket.passengerName
+        validity.text = ticket.getValidityString()
+
+        val codeImage = File(filesDir, ticket.aztecCodeImagePath)
+        Glide.with(this).load(codeImage).into(code)
+
+        val numberImage = File(filesDir, ticket.ticketNumberImagePath)
+        Glide.with(this).load(numberImage).into(number)
+
+        dialog.show()
 
     }
 
 
     companion object {
         private const val PICK_PDF_REQUEST = 1
+    }
+
+    override fun onItemClick(position: Int) {
+        ticketViewModel.allTickets.value?.get(position)?.let { showDialog(it) }
     }
 }
