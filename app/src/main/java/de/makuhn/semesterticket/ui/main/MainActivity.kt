@@ -2,15 +2,22 @@ package de.makuhn.semesterticket.ui.main
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.ContentResolver
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.view.Display
 import android.view.Window
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -142,7 +149,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         val numberImage = File(filesDir, ticket.ticketNumberImagePath)
         Glide.with(this).load(numberImage).into(number)
 
+        dialog.setOnCancelListener {
+            resetWindowBrightness()
+        }
+        setWindowBrightnessToHigh()
         dialog.show()
+        
 
     }
 
@@ -175,6 +187,18 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         builder.show()
 
     }
+
+    private fun setWindowBrightnessToHigh() {
+        val lp = this.window.attributes
+        lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+        this.window.attributes = lp
+    }
+    private fun resetWindowBrightness() {
+        val lp = this.window.attributes
+        lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+        this.window.attributes = lp
+    }
+
 
     fun deleteTicket(ticket: Ticket) {
         ticket.onDelete(this)
