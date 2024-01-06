@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +31,7 @@ class TicketListAdapter(private val listener: RecyclerViewEvent) : ListAdapter<T
         private val ticketValidityView: TextView = itemView.findViewById(R.id.tv_validity)
         private val logo: ImageView = itemView.findViewById(R.id.iv_logo)
         private val item_bg: ConstraintLayout = itemView.findViewById(R.id.item_bg)
+        private val cardView: CardView = itemView.findViewById(R.id.card_view)
 
 
         fun bind(ticket: Ticket) {
@@ -39,15 +42,27 @@ class TicketListAdapter(private val listener: RecyclerViewEvent) : ListAdapter<T
             if (!ticket.isValid()){
                 item_bg.setBackgroundResource(R.drawable.recyclerview_item_invalid_background)
                 ticketTitleView.setTypeface(null, Typeface.ITALIC)
+                cardView.elevation = 0f
+                logo.alpha = 0.4f
+
             } else {
                 item_bg.setBackgroundResource(R.drawable.recyclerview_item_background)
                 ticketTitleView.setTypeface(null, Typeface.BOLD)
+                cardView.elevation = 8f
+                logo.alpha = 1f
+
             }
 
-            if (ticket.ticketType == Ticket.Type.DEUTSCHLANDTICKET){
-                logo.setImageResource(R.drawable.dticket)
-            } else {
-                logo.setImageResource(R.drawable.nrwmobil)
+            when (ticket.ticketType) {
+                Ticket.Type.DEUTSCHLANDTICKET -> {
+                    logo.setImageResource(R.drawable.dticket_icon)
+                }
+                Ticket.Type.SEMESTERTICKET -> {
+                    logo.setImageResource(R.drawable.mobilnrw_icon)
+                }
+                else -> {
+                    logo.setImageResource(R.drawable.semticket_icon)
+                }
             }
 
             itemView.setOnClickListener(this)

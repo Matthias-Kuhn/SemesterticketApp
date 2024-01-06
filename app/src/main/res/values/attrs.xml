@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="bg_color" format="color" />
+    <attr name="bg_item_color" format="color" />
+    <attr name="bg_invalid_item_color" format="color" />
+    <attr name="font_invalid_item_color" format="color" />
+    <attr name="font_color" format="color" />
+</resources>

@@ -3,5 +3,11 @@
     <style name="Base.Theme.Semesterticket" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="bg_color">@color/background_darkmode</item>
+        <item name="bg_item_color">@color/item_background_darkmode</item>
+        <item name="bg_invalid_item_color">@color/invalid_item_background_darkmode</item>
+        <item name="font_invalid_item_color">@color/invalid_font_darkmode</item>
+        <item name="font_color">@color/font_darkmode</item>
     </style>
 </resources>

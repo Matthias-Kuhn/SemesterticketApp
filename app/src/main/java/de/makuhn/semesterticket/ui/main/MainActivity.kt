@@ -21,6 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.makuhn.semesterticket.R
 import de.makuhn.semesterticket.TicketApplication
@@ -141,10 +142,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
 
         if (ticket.ticketType == Ticket.Type.DEUTSCHLANDTICKET) {
             title.text = "D-Ticket"
-            logo.setImageResource(R.drawable.dticket)
+            logo.setImageResource(R.drawable.dticket_icon)
         } else {
             title.text = ticket.ticketTitle
-            logo.setImageResource(R.drawable.nrwmobil)
+            logo.setImageResource(R.drawable.mobilnrw_icon)
         }
 
         subtitle.text = ticket.ticketSubtitle
@@ -177,9 +178,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
 
     override fun onItemLongClick(position: Int) {
 
-        val builder = AlertDialog.Builder(this)
+        val builder = MaterialAlertDialogBuilder(this)
         builder.setTitle("Löschen")
         builder.setMessage("Wirklich dieses Ticket Löschen?")
+
 
 
         builder.setPositiveButton("Ja") { dialog, which ->

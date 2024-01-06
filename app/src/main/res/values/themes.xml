@@ -2,7 +2,13 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Semesterticket" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="bg_color">@color/background_lightmode</item>
+        <item name="bg_item_color">@color/item_background_lightmode</item>
+        <item name="bg_invalid_item_color">@color/invalid_item_background_lightmode</item>
+        <item name="font_invalid_item_color">@color/font_lightmode</item>
+        <item name="font_color">@color/font_lightmode</item>
+
     </style>
 
     <style name="Theme.Semesterticket" parent="Base.Theme.Semesterticket" />
