@@ -179,17 +179,17 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
     override fun onItemLongClick(position: Int) {
 
         val builder = MaterialAlertDialogBuilder(this)
-        builder.setTitle("Löschen")
-        builder.setMessage("Wirklich dieses Ticket Löschen?")
+        builder.setTitle(getString(R.string.delete))
+        builder.setMessage(getString(R.string.really_delete))
 
 
 
-        builder.setPositiveButton("Ja") { dialog, which ->
+        builder.setPositiveButton(getString(R.string.yes)) { dialog, which ->
             val ticket = ticketViewModel.allTickets.value?.sortedByDescending { it.validityEndDate }?.get(position)
             ticket?.let { deleteTicket(it) }
         }
 
-        builder.setNegativeButton("Nein") { dialog, which ->
+        builder.setNegativeButton(getString(R.string.no)) { dialog, which ->
 
         }
 

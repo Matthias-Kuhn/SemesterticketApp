@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:alpha="0.5"
-        android:text="Original Ticket öffnen"
+        android:text="@string/open_original_ticket"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="14sp"

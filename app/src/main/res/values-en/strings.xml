@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SemTi</string>
+    <string name="my_tickets">My tickets</string>
+    <string name="delete">Delete</string>
+    <string name="really_delete">Do you really want to delete this ticket?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="open_original_ticket">Open original ticket</string>
+</resources>
