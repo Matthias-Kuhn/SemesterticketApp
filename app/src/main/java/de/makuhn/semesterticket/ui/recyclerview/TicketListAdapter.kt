@@ -39,6 +39,9 @@ class TicketListAdapter(private val listener: RecyclerViewEvent) : ListAdapter<T
             if (!ticket.isValid()){
                 item_bg.setBackgroundResource(R.drawable.recyclerview_item_invalid_background)
                 ticketTitleView.setTypeface(null, Typeface.ITALIC)
+            } else {
+                item_bg.setBackgroundResource(R.drawable.recyclerview_item_background)
+                ticketTitleView.setTypeface(null, Typeface.BOLD)
             }
 
             if (ticket.ticketType == Ticket.Type.DEUTSCHLANDTICKET){
