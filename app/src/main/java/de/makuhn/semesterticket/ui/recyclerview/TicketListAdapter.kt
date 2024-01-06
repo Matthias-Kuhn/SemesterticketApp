@@ -1,5 +1,6 @@
 package de.makuhn.semesterticket.ui.recyclerview
 
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,12 +28,18 @@ class TicketListAdapter(private val listener: RecyclerViewEvent) : ListAdapter<T
         private val ticketNameView: TextView = itemView.findViewById(R.id.tv_passenger)
         private val ticketValidityView: TextView = itemView.findViewById(R.id.tv_validity)
         private val logo: ImageView = itemView.findViewById(R.id.iv_logo)
+        private val item_bg: ConstraintLayout = itemView.findViewById(R.id.item_bg)
 
 
         fun bind(ticket: Ticket) {
             ticketTitleView.text = ticket.ticketTitle
             ticketNameView.text = ticket.passengerName
             ticketValidityView.text = ticket.getValidityString()
+
+            if (!ticket.isValid()){
+                item_bg.setBackgroundResource(R.drawable.recyclerview_item_invalid_background)
+                ticketTitleView.setTypeface(null, Typeface.ITALIC)
+            }
 
             if (ticket.ticketType == Ticket.Type.DEUTSCHLANDTICKET){
                 logo.setImageResource(R.drawable.dticket)

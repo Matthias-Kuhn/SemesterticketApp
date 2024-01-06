@@ -26,6 +26,7 @@ import de.makuhn.semesterticket.R
 import de.makuhn.semesterticket.TicketApplication
 import de.makuhn.semesterticket.data.BitmapStorageHelper
 import de.makuhn.semesterticket.model.Ticket
+import de.makuhn.semesterticket.ui.fullsizeticket.FullSizeImageActivity
 import de.makuhn.semesterticket.ui.recyclerview.TicketListAdapter
 import de.makuhn.semesterticket.ui.viewmodel.TicketViewModel
 import de.makuhn.semesterticket.ui.viewmodel.TicketViewModelFactory
@@ -130,6 +131,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         val code = dialog.findViewById<ImageView>(R.id.iv_code)
         val number = dialog.findViewById<ImageView>(R.id.iv_ticketNumber)
         val logo = dialog.findViewById<ImageView>(R.id.iv_logo)
+        val tv_open = dialog.findViewById<TextView>(R.id.tv_openOriginal)
+
+        tv_open.setOnClickListener {
+            val intent = Intent(this, FullSizeImageActivity::class.java)
+            intent.putExtra("imageUrl", ticket.fullSizeTicketImagePath)
+            startActivity(intent)
+        }
 
         if (ticket.ticketType == Ticket.Type.DEUTSCHLANDTICKET) {
             title.text = "D-Ticket"
