@@ -7,7 +7,7 @@ object TicketCropUtils {
         return PdfUtils.cropBitmap(bitmap, 800, 350, 400, 400)
     }
     fun cropToTitle(bitmap: Bitmap): Bitmap {
-        return PdfUtils.cropBitmap(bitmap, 674, 119, 635, 76)
+        return PdfUtils.cropBitmap(bitmap, 533, 119, 918, 76)
     }
     fun cropToSubtitle(bitmap: Bitmap): Bitmap {
         return PdfUtils.cropBitmap(bitmap, 674, 196, 635, 67)
